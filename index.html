@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chameleon – A Lesson on Trevor Noah & Apartheid</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0a;
+    --surface: #1a1714;
+    --surface2: #242018;
+    --gold: #e8b84b;
+    --gold-light: #f5d07a;
+    --rust: #c85a2e;
+    --sage: #7aab8a;
+    --text: #f0ebe0;
+    --text-muted: #9c9282;
+    --border: rgba(232,184,75,0.18);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    overflow: hidden;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, #2a1f08 0%, #0f0d0a 70%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(232,184,75,0.04) 80px),
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(232,184,75,0.04) 80px);
+    pointer-events: none;
+  }
+  .hero-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+    background: rgba(232,184,75,0.06);
+    animation: fadeSlideDown 0.7s ease both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.95;
+    color: var(--text);
+    animation: fadeSlideDown 0.7s 0.1s ease both;
+  }
+  .hero h1 span { color: var(--gold); font-style: italic; }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 24px auto 0;
+    animation: fadeSlideDown 0.7s 0.2s ease both;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeSlideDown 0.7s 0.3s ease both;
+  }
+  .hero-meta-item {
+    text-align: center;
+  }
+  .hero-meta-item strong {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.4rem;
+    color: var(--gold);
+  }
+  .hero-meta-item span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { opacity: 0.5; }
+
+  /* ── NAV TABS ── */
+  .tab-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,13,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 16px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 64px 24px; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), var(--rust), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 32px;
+    animation: fadeIn 0.4s ease both;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--bg);
+  }
+  .timeline-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .timeline-event {
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .timeline-event em { color: var(--text-muted); font-style: normal; font-size: 0.88rem; }
+
+  /* ── TEXT EXCERPT ── */
+  .text-excerpt {
+    background: var(--surface);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 32px;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+  .text-excerpt p { margin-bottom: 16px; }
+  .text-excerpt p:last-child { margin-bottom: 0; }
+  .text-excerpt .highlight {
+    background: rgba(232,184,75,0.15);
+    border-radius: 3px;
+    padding: 0 3px;
+    color: var(--gold-light);
+  }
+
+  /* ── VIDEO GRID ── */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .video-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .video-card:hover { transform: translateY(-4px); border-color: var(--gold); }
+  .video-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .play-btn {
+    position: absolute;
+    width: 52px; height: 52px;
+    background: rgba(232,184,75,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #000;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+  }
+  .video-card:hover .play-btn { transform: scale(1.1); }
+  .video-info { padding: 16px; }
+  .video-info h4 { font-size: 0.92rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .video-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+  /* ── TASKS ── */
+  .task-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .task-block::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -10px; right: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(232,184,75,0.06);
+    line-height: 1;
+  }
+  .task-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .badge-read { background: rgba(122,171,138,0.15); color: var(--sage); border: 1px solid rgba(122,171,138,0.3); }
+  .badge-write { background: rgba(200,90,46,0.12); color: #e88a5e; border: 1px solid rgba(200,90,46,0.3); }
+  .badge-discuss { background: rgba(232,184,75,0.1); color: var(--gold); border: 1px solid var(--border); }
+  .badge-extra { background: rgba(150,100,200,0.1); color: #c09ae0; border: 1px solid rgba(150,100,200,0.3); }
+
+  .task-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .task-body { font-size: 0.93rem; color: var(--text-muted); line-height: 1.75; }
+  .task-body ol, .task-body ul { padding-left: 20px; margin-top: 8px; }
+  .task-body li { margin-bottom: 6px; }
+  .task-body strong { color: var(--text); }
+
+  textarea.answer-box {
+    width: 100%;
+    min-height: 100px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 14px;
+    margin-top: 14px;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  textarea.answer-box:focus { outline: none; border-color: var(--gold); }
+  textarea.answer-box::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+    margin-top: 12px;
+  }
+  .btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: rgba(232,184,75,0.08); }
+
+  /* ── QUIZ GAME ── */
+  .quiz-container { max-width: 700px; margin: 0 auto; }
+  .quiz-progress {
+    display: flex; gap: 6px; margin-bottom: 32px;
+  }
+  .quiz-dot {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: var(--surface2);
+    transition: background 0.3s;
+  }
+  .quiz-dot.done { background: var(--gold); }
+  .quiz-dot.active { background: var(--rust); }
+
+  .quiz-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 24px;
+    min-height: 60px;
+  }
+  .quiz-options { display: grid; gap: 12px; margin-bottom: 24px; }
+  .quiz-opt {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.93rem;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--gold); transform: translateX(4px); background: var(--surface2); }
+  .quiz-opt.correct { border-color: var(--sage); background: rgba(122,171,138,0.1); color: var(--sage); }
+  .quiz-opt.wrong { border-color: var(--rust); background: rgba(200,90,46,0.08); color: #e88a5e; }
+  .quiz-opt:disabled { cursor: default; transform: none; }
+  .quiz-feedback {
+    min-height: 48px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    display: none;
+    margin-bottom: 16px;
+  }
+  .quiz-score {
+    text-align: center;
+    padding: 48px 24px;
+    display: none;
+  }
+  .quiz-score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  /* ── WORD MATCH GAME ── */
+  .word-match { }
+  .match-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .match-col { display: flex; flex-direction: column; gap: 10px; }
+  .match-col h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .match-word, .match-def {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 2px solid var(--border);
+    transition: all 0.2s;
+    background: var(--surface);
+    user-select: none;
+  }
+  .match-word { font-weight: 600; color: var(--gold-light); font-family: 'DM Mono', monospace; }
+  .match-def { color: var(--text-muted); font-size: 0.85rem; line-height: 1.45; }
+  .match-word.selected, .match-def.selected { border-color: var(--gold); background: rgba(232,184,75,0.08); }
+  .match-word.matched, .match-def.matched { border-color: var(--sage); background: rgba(122,171,138,0.08); color: var(--sage); cursor: default; opacity: 0.7; }
+  .match-word.wrong-match, .match-def.wrong-match { border-color: var(--rust); animation: shake 0.4s ease; }
+  .match-result { text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--text-muted); min-height: 24px; }
+
+  /* ── FILL BLANKS GAME ── */
+  .fill-blanks-text {
+    font-size: 1.05rem;
+    line-height: 2.2;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .blank-input {
+    display: inline-block;
+    min-width: 120px;
+    border: none;
+    border-bottom: 2px solid var(--gold);
+    background: transparent;
+    color: var(--gold-light);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 2px 6px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .blank-input:focus { border-bottom-color: var(--gold-light); }
+  .blank-input.correct { border-bottom-color: var(--sage); color: var(--sage); }
+  .blank-input.wrong { border-bottom-color: var(--rust); color: #e88a5e; }
+  .word-bank {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin: 20px 0;
+  }
+  .word-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .word-chip:hover { background: rgba(232,184,75,0.1); border-color: var(--gold); }
+  .word-chip.used { opacity: 0.3; cursor: default; text-decoration: line-through; }
+
+  /* ── CHAMELEON METAPHOR SORT ── */
+  .sort-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .sort-zone {
+    background: var(--surface);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    min-height: 160px;
+    transition: border-color 0.2s;
+  }
+  .sort-zone.drag-over { border-color: var(--gold); background: rgba(232,184,75,0.04); }
+  .sort-zone h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .sort-cards-pool { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .drag-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    cursor: grab;
+    transition: all 0.2s;
+    color: var(--text);
+    user-select: none;
+  }
+  .drag-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .drag-card.dragging { opacity: 0.4; cursor: grabbing; }
+  .sort-result { margin-top: 16px; font-size: 0.88rem; color: var(--text-muted); text-align: center; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: rgba(232,184,75,0.05);
+    border: 1px solid rgba(232,184,75,0.2);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .info-box strong { color: var(--gold); }
+
+  /* ── KEY TERMS GRID ── */
+  .terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .term-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .term-card dt {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+  .term-card dd { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── FOOTER PROGRESS ── */
+  .lesson-progress {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(15,13,10,0.97);
+    border-top: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    z-index: 200;
+  }
+  .progress-bar-outer {
+    flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; max-width: 300px;
+  }
+  .progress-bar-inner {
+    height: 100%; background: linear-gradient(to right, var(--gold), var(--rust));
+    border-radius: 2px; width: 0%;
+    transition: width 0.5s ease;
+  }
+  .timer-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--gold);
+    min-width: 70px;
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-6px); }
+    40%,80% { transform: translateX(6px); }
+  }
+
+  .chameleon-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--gold-light);
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 32px 0;
+    line-height: 1.5;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:600px){
+    .two-col, .match-columns, .sort-zones { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 3rem; }
+  }
+
+  .apartheid-fact {
+    background: var(--surface2);
+    border-left: 3px solid var(--rust);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
+  .apartheid-fact strong { color: #e88a5e; }
+
+  .active-section-indicator {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .guide-note {
+    background: rgba(150,100,200,0.06);
+    border: 1px solid rgba(150,100,200,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    color: #c09ae0;
+    margin-bottom: 16px;
+  }
+  .guide-note strong { color: #d0aaee; }
+
+  /* segment labels */
+  .time-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div class="hero-badge">English VG1 · Academic Line · 90 minutes</div>
+  <h1>Cha<span>me</span>leon</h1>
+  <p class="hero-sub">Language, identity & apartheid in South Africa — through the eyes of Trevor Noah</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><strong>5</strong><span>Tasks</span></div>
+    <div class="hero-meta-item"><strong>3</strong><span>Games</span></div>
+    <div class="hero-meta-item"><strong>90</strong><span>Minutes</span></div>
+    <div class="hero-meta-item"><strong>+3</strong><span>Bonus</span></div>
+  </div>
+  <div class="scroll-hint">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    Scroll to begin
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showSection('who')">01 · Who is Trevor?</button>
+  <button class="tab-btn" onclick="showSection('apartheid')">02 · Apartheid</button>
+  <button class="tab-btn" onclick="showSection('text')">03 · The Text</button>
+  <button class="tab-btn" onclick="showSection('videos')">04 · Watch</button>
+  <button class="tab-btn" onclick="showSection('tasks')">05 · Tasks</button>
+  <button class="tab-btn" onclick="showSection('games')">06 · Games</button>
+  <button class="tab-btn" onclick="showSection('bonus')">⭐ Bonus</button>
+</nav>
+
+<!-- SECTION 1: WHO IS TREVOR? -->
+<section class="section active" id="who">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">Who is Trevor Noah?</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> Use this as a 10-minute warm-up. Ask students: what do they know about South Africa? Have they heard of Trevor Noah?</div>
+
+  <div class="card">
+    <div class="card-title">Born a Crime</div>
+    <p>Trevor Noah was born on 20 February 1984 in Johannesburg, South Africa. His mother, Patricia, was Black Xhosa, and his father, Robert, was White Swiss-German. Under apartheid law, their relationship was <em>illegal</em> — and so was Trevor's very existence. The title of his autobiography, <em>Born a Crime</em>, refers to this directly.</p>
+  </div>
+
+  <div class="two-col" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">🎤 Comedian & Host</div>
+      <p style="font-size:0.9rem;color:var(--text-muted);">Trevor Noah hosted <em>The Daily Show</em> on Comedy Central (USA) from 2015 to 2022. The show uses humour and satire to comment on politics and current events. He became one of the most famous South African voices in the world.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">📖 Born a Crime (2016)</div>
+      <p style="font-size:0.9rem;color:var(--text-muted);">His autobiography tells the story of growing up in South Africa during and after apartheid. <em>Chameleon</em>, the text you will read today, is extracted from this book. It explores language, identity, and survival.</p>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">1984</div>
+      <div class="timeline-event">Born in Johannesburg, South Africa. <em>His birth itself is illegal under apartheid law.</em></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1994</div>
+      <div class="timeline-event">Apartheid ends. Nelson Mandela becomes South Africa's first Black president. <em>Trevor is 10 years old.</em></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2015</div>
+      <div class="timeline-event">Becomes host of <em>The Daily Show</em> on Comedy Central, USA.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2016</div>
+      <div class="timeline-event">Publishes <em>Born a Crime: Stories from a South African Childhood</em>.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2022</div>
+      <div class="timeline-event">Steps down from <em>The Daily Show</em> after seven years.</div>
+    </div>
+  </div>
+
+  <div class="chameleon-quote">"I became a chameleon. My color didn't change, but I could change your perception of my color."<br><span style="font-size:0.8rem;color:var(--text-muted);font-style:normal;">— Trevor Noah, <em>Born a Crime</em></span></div>
+
+  <div class="info-box">
+    <strong>Did you know?</strong> Trevor Noah grew up speaking <strong>six languages</strong>: Xhosa, Zulu, Sotho, Tswana, Afrikaans, and English. As you will read, he used language as a tool to survive and to belong.
+  </div>
+
+  <button class="btn" onclick="showSection('apartheid')">Next: Apartheid →</button>
+</section>
+
+<!-- SECTION 2: APARTHEID -->
+<section class="section" id="apartheid">
+  <div class="section-label">Section 02</div>
+  <div class="section-title">Apartheid in South Africa</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> Allow ~15 minutes for this section. The background box from the text is reproduced here. Ask students to read the key facts before moving on.</div>
+
+  <div class="info-box" style="font-size:0.95rem;line-height:1.8;border-color:rgba(200,90,46,0.4);background:rgba(200,90,46,0.05);">
+    <strong style="color:#e88a5e;">From the text:</strong><br>
+    Apartheid started in 1948, giving Whites total control over South Africa. Blacks, who at that time made up 87% of the population, lived on only 13% of the land. During apartheid, they could not vote, own land, be in relationships with Whites or even live in the same areas. Rebellion within the country, led by Nelson Mandela, and pressure from countries all over the world led to the end of apartheid in 1994.
+  </div>
+
+  <div class="apartheid-fact"><strong>1948:</strong> The National Party wins the election in South Africa and officially introduces apartheid — a system of racial segregation meaning "separateness" in Afrikaans.</div>
+  <div class="apartheid-fact"><strong>The Population Registration Act:</strong> Every South African was classified by race: White, Coloured, Indian, or Black (Bantu). This classification determined almost every aspect of a person's life.</div>
+  <div class="apartheid-fact"><strong>Pass Laws:</strong> Black South Africans had to carry a passbook at all times to travel in "white areas." Failure to show the passbook meant arrest.</div>
+  <div class="apartheid-fact"><strong>Bantustans:</strong> Black South Africans were forced to live in "homelands" (bantustans) — 13% of the land for 87% of the population.</div>
+  <div class="apartheid-fact"><strong>The Immorality Act:</strong> Sexual relations and marriage between Whites and people of other races were illegal. This is why Trevor Noah was literally "born a crime."</div>
+  <div class="apartheid-fact"><strong>1960 – Sharpeville Massacre:</strong> Police open fire on peaceful protesters, killing 69 people. The ANC (African National Congress), led by Nelson Mandela, is banned.</div>
+  <div class="apartheid-fact"><strong>1964 – Mandela imprisoned:</strong> Nelson Mandela is sentenced to life in prison on Robben Island.</div>
+  <div class="apartheid-fact"><strong>1990:</strong> F.W. de Klerk unbans the ANC and releases Mandela after 27 years in prison.</div>
+  <div class="apartheid-fact"><strong>1994:</strong> South Africa holds its first fully democratic election. Nelson Mandela becomes president. Apartheid officially ends.</div>
+
+  <div class="terms-grid" style="margin-top:28px;">
+    <dl class="term-card"><dt>Apartheid</dt><dd>Afrikaans for "separateness." A system of institutionalised racial segregation in South Africa (1948–1994).</dd></dl>
+    <dl class="term-card"><dt>Segregation</dt><dd>Enforced separation of racial groups in public spaces, schools, transport, etc.</dd></dl>
+    <dl class="term-card"><dt>ANC</dt><dd>African National Congress. The political party that led the resistance against apartheid.</dd></dl>
+    <dl class="term-card"><dt>Township</dt><dd>Urban areas designated for non-white residents, often poorly serviced. Soweto is a famous example.</dd></dl>
+    <dl class="term-card"><dt>Afrikaans</dt><dd>A language developed from Dutch, spoken by the White Afrikaner community that controlled the government during apartheid.</dd></dl>
+    <dl class="term-card"><dt>Xhosa / Zulu</dt><dd>Two of South Africa's major indigenous languages and ethnic groups. Trevor Noah's mother was Xhosa.</dd></dl>
+  </div>
+
+  <button class="btn" style="margin-top:28px;" onclick="showSection('text')">Next: Read the Text →</button>
+</section>
+
+<!-- SECTION 3: THE TEXT -->
+<section class="section" id="text">
+  <div class="section-label">Section 03</div>
+  <div class="section-title">Chameleon — Read the Text</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> Give students 15–20 minutes to read carefully. Key passages are highlighted. Encourage annotation: what surprises them? What do they want to ask?</div>
+
+  <div class="time-tag">📖 Read carefully — ~15 min</div>
+
+  <div class="text-excerpt">
+    <p>As a kid I understood that people were different colors, but in my head white and black and brown were like types of chocolate. Dad was the white chocolate, mom was the dark chocolate, and I was the milk chocolate. But we were all just chocolate. I didn't know any of it had anything to do with "race." I didn't know what race was. My mother never referred to my dad as white or to me as mixed. So when the other kids in Soweto called me "white," even though I was light brown, I just thought they had their colors mixed up, like they hadn't learned them properly. "Ah, yes, my friend. You've confused aqua with turquoise. I can see how you made that mistake. You're not the first."</p>
+
+    <p>I soon learned that <span class="highlight">the quickest way to bridge the race gap was through language</span>. Soweto was a melting pot: families from different tribes and homelands. Most kids in the township spoke only their home language, but I learned several languages because I grew up in a house where there was no option but to learn them. My mom made sure English was the first language I spoke. <span class="highlight">If you're black in South Africa, speaking English is the one thing that can give you a leg up.</span> English is the language of money. English comprehension is equated with intelligence. If you're looking for a job, English is the difference between getting the job or staying unemployed. If you're standing in the dock, English is the difference between getting off with a fine or going to prison.</p>
+
+    <p>After English, Xhosa was what we spoke around the house. When my mother was angry she'd fall back on her home language. As a naughty child, I was well versed in Xhosa threats. They were the first phrases I picked up, mostly for my own safety— phrases like <em>"Ndiza kubetha entloko."</em> "I'll knock you upside the head." Or <em>"Sidenge ndini somntwana."</em> "You idiot of a child." It's a very passionate language. Outside of that, my mother picked up different languages here and there. She learned Zulu because it's similar to Xhosa. She spoke German because of my father. She spoke Afrikaans because it is useful to know the language of your oppressor. <span class="highlight">Sotho she learned in the streets.</span></p>
+
+    <p>Living with my mom, I saw how she used language to cross boundaries, handle situations, navigate the world. We were in a shop once, and the shopkeeper, right in front of us, turned to his security guard and said, in Afrikaans, <em>"Volg daai swartes, netnou steel hulle iets."</em> "Follow those blacks in case they steal something."</p>
+
+    <p>My mother turned around and said, in beautiful, fluent Afrikaans, <em>"Hoekom volg jy nie daai swartes sodat jy hulle kan help kry waarna hulle soek nie?"</em> "Why don't you follow these blacks so you can help them find what they're looking for?"</p>
+
+    <p><em>"Ag, jammer!"</em> he said, apologizing in Afrikaans. Then—and this was the funny thing—he didn't apologize for being racist; he merely apologized for aiming his racism at us. "Oh, I'm so sorry," he said. "I thought you were like the other blacks. You know how they love to steal."</p>
+
+    <p>I learned to use language like my mother did. I would simulcast—give you the program in your own tongue. I'd get suspicious looks from people just walking down the street. "Where are you from?" they'd ask. I'd reply in whatever language they'd addressed me in, using the same accent that they used. There would be a brief moment of confusion, and then the suspicious look would disappear. "Oh, okay. I thought you were a stranger. We're good then."</p>
+
+    <p>It became a tool that served me my whole life. One day as a young man I was walking down the street, and a group of Zulu guys was walking behind me, closing in on me, and I could hear them talking to one another about how they were going to mug me. <em>"Asibambe le autie yomlungu. Phuma ngapha mina ngizoqhamuka ngemuva kwakhe."</em> "Let's get this white guy. You go to his left, and I'll come up behind him." I didn't know what to do. I couldn't run, so I just spun around real quick and said, <em>"Kodwa bafwethu yingani singavele sibambe umuntu inkunzi? Asenzeni. Mina ngikulindele."</em> "Yo, guys, why don't we just mug someone together? I'm ready. Let's do it."</p>
+
+    <p>They looked shocked for a moment, and then they started laughing. "Oh, sorry, dude. We thought you were something else. We weren't trying to take anything from you. We were trying to steal from white people. Have a good day, man." They were ready to do me violent harm, until they felt we were part of the same tribe, and then we were cool. That, and so many other smaller incidents in my life, made me realize that <span class="highlight">language, even more than color, defines who you are to people.</span></p>
+
+    <p><strong>I became a chameleon.</strong> My color didn't change, but I could change your perception of my color. If you spoke to me in Zulu, I replied to you in Zulu. If you spoke to me in Tswana, I replied to you in Tswana. Maybe I didn't look like you, but if I spoke like you, I was you.</p>
+    <p><em>(Extract from Born a Crime)</em></p>
+  </div>
+
+  <div class="info-box">
+    <strong>Glossary:</strong> <strong>melting pot</strong> = a place where people of different backgrounds mix · <strong>simulcast</strong> = broadcast in multiple formats at once · <strong>to mug</strong> = to rob someone in public · <strong>to bridge the gap</strong> = to reduce a difference · <strong>dock</strong> = the place in a courtroom where the accused stands · <strong>oppressor</strong> = someone who uses power to keep others down
+  </div>
+
+  <button class="btn" onclick="showSection('videos')">Next: Watch Trevor →</button>
+</section>
+
+<!-- SECTION 4: VIDEOS -->
+<section class="section" id="videos">
+  <div class="section-label">Section 04</div>
+  <div class="section-title">Watch & Listen</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> Pick 1–2 clips to show to the class. The first two connect directly to the text topics. The stand-up clips show his humour — great for discussing how he uses comedy to talk about serious topics.</div>
+
+  <p style="color:var(--text-muted);margin-bottom:28px;font-size:0.93rem;">These YouTube clips will help you understand Trevor Noah's voice, humour, and background. Click to open in YouTube.</p>
+
+  <div class="video-grid">
+    <a class="video-card" href="https://www.youtube.com/watch?v=BTnfKbXWxVE" target="_blank" rel="noopener">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/BTnfKbXWxVE/hqdefault.jpg" alt="Trevor Noah on apartheid" onerror="this.style.display='none'">
+        <div class="play-btn">▶</div>
+      </div>
+      <div class="video-info">
+        <h4>"Born a Crime" – Trevor Noah on Growing Up in Apartheid</h4>
+        <p>Trevor discusses his childhood, his mother, and what it meant to be mixed-race in South Africa. Perfect context for the text.</p>
+      </div>
+    </a>
+
+    <a class="video-card" href="https://www.youtube.com/watch?v=O4irXQhgMqg" target="_blank" rel="noopener">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/O4irXQhgMqg/hqdefault.jpg" alt="Trevor Noah on language" onerror="this.style.display='none'">
+        <div class="play-btn">▶</div>
+      </div>
+      <div class="video-info">
+        <h4>Trevor Noah – "Language Is a Tool" (stand-up)</h4>
+        <p>Hilarious clip about accents and language — connects directly to the "chameleon" theme of the text.</p>
+      </div>
+    </a>
+
+    <a class="video-card" href="https://www.youtube.com/watch?v=NGaHMb5Vhao" target="_blank" rel="noopener">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/NGaHMb5Vhao/hqdefault.jpg" alt="Trevor Noah funny accents" onerror="this.style.display='none'">
+        <div class="play-btn">▶</div>
+      </div>
+      <div class="video-info">
+        <h4>Trevor Noah Does Accents from Around the World</h4>
+        <p>Laugh-out-loud demonstration of his language abilities — and a fun way to introduce the concept of code-switching.</p>
+      </div>
+    </a>
+
+    <a class="video-card" href="https://www.youtube.com/watch?v=MbylHmBpDbo" target="_blank" rel="noopener">
+      <div class="video-thumb">
+        <img src="https://img.youtube.com/vi/MbylHmBpDbo/hqdefault.jpg" alt="Trevor Noah on his mother" onerror="this.style.display='none'">
+        <div class="play-btn">▶</div>
+      </div>
+      <div class="video-info">
+        <h4>Trevor Noah – His Mother Patricia (emotional and funny)</h4>
+        <p>Trevor talks about the most important person in the book — his mother. Great discussion starter: how does a parent shape identity?</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="info-box" style="margin-top:24px;">
+    <strong>Discussion after watching:</strong> How does Trevor use humour to discuss difficult topics? Is this an effective way to communicate? Can you think of other comedians or artists who do this?
+  </div>
+
+  <button class="btn" onclick="showSection('tasks')">Next: Tasks →</button>
+</section>
+
+<!-- SECTION 5: TASKS -->
+<section class="section" id="tasks">
+  <div class="section-label">Section 05</div>
+  <div class="section-title">Text Tasks</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> Tasks 1–3 are reading comprehension tasks (individual, ~20 min). Tasks 4–5 are analysis and discussion (pairs/groups). These are designed for VG1 academic level.</div>
+
+  <!-- TASK 1 -->
+  <div class="task-block" data-num="1">
+    <div class="time-tag">⏱ ~5 min · Individual</div>
+    <div class="task-badge badge-read">Reading Comprehension</div>
+    <div class="task-title">1 — What does Trevor say about language?</div>
+    <div class="task-body">
+      <p>Read the text carefully and answer these questions in your own words:</p>
+      <ol>
+        <li>According to Trevor, <strong>what is the quickest way to bridge the race gap?</strong></li>
+        <li>What does Trevor say English gives you in South Africa? Give <strong>three specific examples</strong> from the text.</li>
+        <li>Why did Trevor's mother learn Afrikaans? What does this tell us about power and language?</li>
+        <li>What happened in the shop? Why is this scene important?</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" placeholder="Write your answers here…"></textarea>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="task-block" data-num="2">
+    <div class="time-tag">⏱ ~5 min · Individual</div>
+    <div class="task-badge badge-read">Reading Comprehension</div>
+    <div class="task-title">2 — The Mugging Scene</div>
+    <div class="task-body">
+      <p>Re-read the scene where Trevor is almost mugged by a group of Zulu men (paragraph beginning <em>"One day as a young man…"</em>).</p>
+      <ol>
+        <li>Why were the Zulu men originally going to mug Trevor?</li>
+        <li>What did Trevor do to avoid being mugged?</li>
+        <li>How did the men react, and why?</li>
+        <li>Trevor says: <em>"language, even more than color, defines who you are to people."</em> Do you agree? Use the mugging scene to support your answer.</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" placeholder="Write your answers here…"></textarea>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="task-block" data-num="3">
+    <div class="time-tag">⏱ ~5 min · Individual</div>
+    <div class="task-badge badge-read">Reading Comprehension</div>
+    <div class="task-title">3 — The Chocolate Metaphor</div>
+    <div class="task-body">
+      <p>Trevor opens the text by comparing people to types of chocolate.</p>
+      <ol>
+        <li>What does the chocolate metaphor tell us about how Trevor understood race as a child?</li>
+        <li>How is this childhood view <strong>different</strong> from how South African society viewed race at the time?</li>
+        <li>Do you think this is an effective metaphor? Why / why not?</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" placeholder="Write your answers here…"></textarea>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="task-block" data-num="4">
+    <div class="time-tag">⏱ ~8 min · Pairs</div>
+    <div class="task-badge badge-discuss">Discussion</div>
+    <div class="task-title">4 — The Chameleon Metaphor</div>
+    <div class="task-body">
+      <p>Trevor calls himself a "chameleon." Discuss with a partner:</p>
+      <ul>
+        <li>In what ways is Trevor like a chameleon? List at least <strong>three specific examples</strong> from the text.</li>
+        <li>Is being a chameleon a strength, a survival strategy, or both? Is there anything <strong>lost</strong> when you constantly adapt?</li>
+        <li>Can you think of situations in your own life where you "adapt" your language or behaviour depending on who you are with? (Think: speaking to teachers vs. friends, speaking Norwegian vs. English, etc.)</li>
+      </ul>
+      <p style="margin-top:12px;font-size:0.88rem;color:var(--text-muted);">The academic term for changing language depending on context is <strong>code-switching</strong>. Have you heard of this term?</p>
+    </div>
+    <textarea class="answer-box" placeholder="Notes from your discussion…"></textarea>
+  </div>
+
+  <!-- TASK 5 -->
+  <div class="task-block" data-num="5">
+    <div class="time-tag">⏱ ~8 min · Groups of 3–4</div>
+    <div class="task-badge badge-discuss">Class Discussion</div>
+    <div class="task-title">5 — Apartheid & Today: Does It Still Matter?</div>
+    <div class="task-body">
+      <p>Discuss in groups, then share with the class:</p>
+      <ul>
+        <li>Apartheid ended in 1994. Do you think the effects of apartheid are still felt in South Africa today? Why / why not?</li>
+        <li>Trevor was born in 1984 — ten years before apartheid ended. He grew up in a system that said he should not exist. How might that shape a person's identity and sense of humour?</li>
+        <li>Are there systems in the world today that are similar to apartheid? (Think: discrimination based on race, language, religion, class.)</li>
+      </ul>
+    </div>
+    <textarea class="answer-box" placeholder="Group notes…"></textarea>
+  </div>
+
+  <button class="btn" onclick="showSection('games')">Next: Games →</button>
+</section>
+
+<!-- SECTION 6: GAMES -->
+<section class="section" id="games">
+  <div class="section-label">Section 06</div>
+  <div class="section-title">Games & Activities</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> These games take 15–20 minutes total and are great for consolidating vocabulary and comprehension. Students can work individually or compete in pairs.</div>
+
+  <!-- GAME 1: QUIZ -->
+  <div class="card" style="margin-bottom:32px;">
+    <div class="card-title">🎯 Game 1 — Apartheid & Trevor Noah Quiz</div>
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:20px;">Test your knowledge! 8 questions based on the text and the lesson. How many can you get right?</p>
+
+    <div class="quiz-container">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div id="quizArea">
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-options" id="quizOpts"></div>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+        <button class="btn" id="quizNextBtn" onclick="quizNext()" style="display:none;">Next Question →</button>
+      </div>
+      <div class="quiz-score" id="quizScore">
+        <div class="quiz-score-num" id="scoreNum"></div>
+        <p style="color:var(--text-muted);margin:12px 0 4px;">out of 8 correct</p>
+        <p id="scoreFeedback" style="color:var(--text);font-size:1rem;margin-bottom:24px;"></p>
+        <button class="btn" onclick="startQuiz()">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME 2: WORD MATCH -->
+  <div class="card" style="margin-bottom:32px;">
+    <div class="card-title">🔗 Game 2 — Match the Vocabulary</div>
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:20px;">Click a word on the left, then click its definition on the right. Match all 6 pairs!</p>
+    <div class="word-match">
+      <div class="match-columns">
+        <div class="match-col">
+          <h4>Word</h4>
+          <div id="matchWords"></div>
+        </div>
+        <div class="match-col">
+          <h4>Definition</h4>
+          <div id="matchDefs"></div>
+        </div>
+      </div>
+      <div class="match-result" id="matchResult"></div>
+      <button class="btn btn-ghost" onclick="initMatch()" style="margin-top:12px;">Reset</button>
+    </div>
+  </div>
+
+  <!-- GAME 3: FILL THE BLANKS -->
+  <div class="card">
+    <div class="card-title">✏️ Game 3 — Fill in the Blanks</div>
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:16px;">Click a word from the word bank, then click the blank where it belongs. Complete the key quote from the text!</p>
+
+    <div class="word-bank" id="wordBank"></div>
+
+    <div class="fill-blanks-text" id="fillText"></div>
+
+    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn" onclick="checkBlanks()">Check Answers</button>
+      <button class="btn btn-ghost" onclick="resetBlanks()">Reset</button>
+    </div>
+    <div id="blanksResult" style="margin-top:12px;font-size:0.88rem;color:var(--text-muted);min-height:20px;"></div>
+  </div>
+</section>
+
+<!-- SECTION 7: BONUS -->
+<section class="section" id="bonus">
+  <div class="section-label">⭐ Bonus</div>
+  <div class="section-title">Extra Tasks — For Fast Finishers</div>
+
+  <div class="guide-note"><strong>Teacher note:</strong> These are extension activities for students who finish early or want a deeper challenge.</div>
+
+  <div class="task-block" data-num="B1">
+    <div class="task-badge badge-extra">Bonus · Creative Writing</div>
+    <div class="task-title">B1 — Rewrite the Scene</div>
+    <div class="task-body">
+      <p>Choose ONE of these alternative versions to write (150–200 words):</p>
+      <ol>
+        <li>Rewrite the mugging scene from the perspective of one of the Zulu men. What were they thinking? How did they feel when Trevor spoke Zulu?</li>
+        <li>Rewrite the shop scene from the shopkeeper's perspective. What was going through his mind?</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" style="min-height:180px;" placeholder="Your creative rewrite…"></textarea>
+  </div>
+
+  <div class="task-block" data-num="B2">
+    <div class="task-badge badge-extra">Bonus · Research</div>
+    <div class="task-title">B2 — Nelson Mandela: A Short Profile</div>
+    <div class="task-body">
+      <p>Using what you've read and learned, write a short profile (100–150 words) of Nelson Mandela. Include:</p>
+      <ul>
+        <li>Who he was and what he fought for</li>
+        <li>Why he was imprisoned and for how long</li>
+        <li>What he achieved</li>
+        <li>Why his legacy matters today</li>
+      </ul>
+    </div>
+    <textarea class="answer-box" style="min-height:150px;" placeholder="Your Mandela profile…"></textarea>
+  </div>
+
+  <div class="task-block" data-num="B3">
+    <div class="task-badge badge-extra">Bonus · Reflection</div>
+    <div class="task-title">B3 — "Born a Crime": What's in a Title?</div>
+    <div class="task-body">
+      <p>The title of Trevor Noah's autobiography is <em>Born a Crime</em>.</p>
+      <ol>
+        <li>What does this title mean literally? (Why was he "born a crime"?)</li>
+        <li>What could the title mean <em>metaphorically</em> or symbolically?</li>
+        <li>Do you think it is an effective title? Why? Can you think of an alternative title for this extract?</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" placeholder="Your reflection…"></textarea>
+  </div>
+
+  <div class="task-block" data-num="B4">
+    <div class="task-badge badge-extra">Bonus · Deeper Reading</div>
+    <div class="task-title">B4 — Autobiography as a Genre</div>
+    <div class="task-body">
+      <p><em>Born a Crime</em> is an autobiography — a person's own account of their life.</p>
+      <ol>
+        <li>What are the advantages of telling this story through an autobiography? What can an autobiography do that a history book cannot?</li>
+        <li>Find three stylistic features in the text that make it feel personal and authentic. Think about: voice, humour, dialogue, examples.</li>
+        <li>Trevor mixes serious topics with humour throughout the text. Find one example of this combination and discuss why he might have chosen to write this way.</li>
+      </ol>
+    </div>
+    <textarea class="answer-box" placeholder="Your genre analysis…"></textarea>
+  </div>
+</section>
+
+<!-- FOOTER PROGRESS -->
+<div class="lesson-progress">
+  <div class="active-section-indicator" id="sectionIndicator">01 · Who is Trevor?</div>
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar"></div>
+  </div>
+  <div class="timer-display" id="timerDisplay">00:00</div>
+</div>
+
+<script>
+// ── SECTION NAVIGATION ──
+const sectionMap = {
+  who: { label: '01 · Who is Trevor?', progress: 14 },
+  apartheid: { label: '02 · Apartheid', progress: 28 },
+  text: { label: '03 · The Text', progress: 42 },
+  videos: { label: '04 · Watch', progress: 56 },
+  tasks: { label: '05 · Tasks', progress: 70 },
+  games: { label: '06 · Games', progress: 85 },
+  bonus: { label: '⭐ Bonus', progress: 100 },
+};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  btns.forEach(b => { if (b.getAttribute('onclick').includes(`'${id}'`)) b.classList.add('active'); });
+  document.getElementById('sectionIndicator').textContent = sectionMap[id].label;
+  document.getElementById('progressBar').style.width = sectionMap[id].progress + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── TIMER ──
+let startTime = Date.now();
+setInterval(() => {
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
+  const s = (elapsed % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').textContent = m + ':' + s;
+}, 1000);
+
+// ── QUIZ ──
+const quizData = [
+  { q: "When did apartheid start in South Africa?", opts: ["1920","1948","1960","1994"], ans: 1, exp: "Apartheid officially began in 1948 when the National Party won the election." },
+  { q: "What fraction of the land did Black South Africans — who made up 87% of the population — live on during apartheid?", opts: ["50%","25%","13%","5%"], ans: 2, exp: "The text states: 'Blacks…lived on only 13% of the land.'" },
+  { q: "Why does Trevor Noah call his autobiography 'Born a Crime'?", opts: ["He was arrested as a baby","Under apartheid law, his parents' relationship was illegal","He was born in prison","His name was illegal"], ans: 1, exp: "His Black mother and White father's relationship was illegal under the Immorality Act, making his very existence a crime." },
+  { q: "According to Trevor in the text, what does 'English is the language of' in South Africa?", opts: ["Education","Religion","Money","Politics"], ans: 2, exp: "Trevor writes: 'English is the language of money.'" },
+  { q: "Why did Trevor's mother learn Afrikaans?", opts: ["Because it's similar to Xhosa","Because she had to by law","Because it is useful to know the language of your oppressor","Because it was required at work"], ans: 2, exp: "Trevor says: 'She spoke Afrikaans because it is useful to know the language of your oppressor.'" },
+  { q: "How did Trevor avoid being mugged by the group of Zulu men?", opts: ["He ran away","He called the police","He spoke to them in Zulu as if he was one of them","He paid them money"], ans: 2, exp: "He spoke Zulu and suggested they mug someone together — making them feel he was 'one of the tribe.'" },
+  { q: "What metaphor does Trevor use at the end of the text to describe himself?", opts: ["A mirror","A chameleon","A parrot","A shadow"], ans: 1, exp: "'I became a chameleon' — he could change how others perceived him through language." },
+  { q: "When did apartheid officially end?", opts: ["1984","1988","1994","2000"], ans: 2, exp: "Apartheid ended in 1994 when South Africa held its first fully democratic election and Nelson Mandela became president." },
+];
+
+let quizIndex = 0, quizScore = 0, answered = false;
+
+function startQuiz() {
+  quizIndex = 0; quizScore = 0; answered = false;
+  document.getElementById('quizScore').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'block';
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = quizData[quizIndex];
+  const prog = document.getElementById('quizProgress');
+  prog.innerHTML = quizData.map((_, i) => `<div class="quiz-dot ${i < quizIndex ? 'done' : i === quizIndex ? 'active' : ''}"></div>`).join('');
+  document.getElementById('quizQ').textContent = `Q${quizIndex + 1}: ${q.q}`;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = q.opts.map((o, i) => `<button class="quiz-opt" onclick="quizAnswer(${i})">${o}</button>`).join('');
+  document.getElementById('quizFeedback').style.display = 'none';
+  document.getElementById('quizNextBtn').style.display = 'none';
+  answered = false;
+}
+
+function quizAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizData[quizIndex];
+  const btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === q.ans) b.classList.add('correct');
+    else if (idx === i && i !== q.ans) b.classList.add('wrong');
+  });
+  const fb = document.getElementById('quizFeedback');
+  if (i === q.ans) { quizScore++; fb.textContent = '✓ Correct! ' + q.exp; fb.style.color = 'var(--sage)'; }
+  else { fb.textContent = '✗ ' + q.exp; fb.style.color = '#e88a5e'; }
+  fb.style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'inline-flex';
+}
+
+function quizNext() {
+  quizIndex++;
+  if (quizIndex >= quizData.length) {
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('quizScore').style.display = 'block';
+    document.getElementById('scoreNum').textContent = quizScore + '/8';
+    const msgs = ['Keep studying! 📚', 'Good effort! 💪', 'Well done! 🎉', 'Excellent! 🌟', 'Perfect score! 🏆'];
+    document.getElementById('scoreFeedback').textContent = msgs[Math.min(Math.floor(quizScore / 2), 4)];
+  } else { renderQuiz(); }
+}
+
+// ── WORD MATCH ──
+const matchPairs = [
+  { word: 'apartheid', def: 'A system of racial segregation in South Africa (1948–1994). Afrikaans for "separateness."' },
+  { word: 'simulcast', def: 'To broadcast or present something in several forms at once — Trevor replies in whatever language he is addressed in.' },
+  { word: 'township', def: 'An urban area designated for non-white residents under apartheid. Soweto is an example.' },
+  { word: 'melting pot', def: 'A place where people of many different backgrounds and cultures mix together.' },
+  { word: 'oppressor', def: 'Someone who uses power or authority to keep others in a state of submission or hardship.' },
+  { word: 'code-switching', def: 'The practice of alternating between two or more languages or dialects depending on context or audience.' },
+];
+
+let matchSelected = null, matchedCount = 0;
+
+function initMatch() {
+  matchedCount = 0; matchSelected = null;
+  const shuffledDefs = [...matchPairs].sort(() => Math.random() - 0.5);
+  const words = document.getElementById('matchWords');
+  const defs = document.getElementById('matchDefs');
+  words.innerHTML = matchPairs.map(p => `<div class="match-word" data-key="${p.word}" onclick="matchClick(this,'word')">${p.word}</div>`).join('');
+  defs.innerHTML = shuffledDefs.map(p => `<div class="match-def" data-key="${p.word}" onclick="matchClick(this,'def')">${p.def}</div>`).join('');
+  document.getElementById('matchResult').textContent = '';
+}
+
+function matchClick(el, type) {
+  if (el.classList.contains('matched')) return;
+  if (!matchSelected) {
+    document.querySelectorAll('.match-word, .match-def').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    matchSelected = { el, type };
+  } else {
+    if (matchSelected.type === type) {
+      document.querySelectorAll('.match-word, .match-def').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      matchSelected = { el, type };
+      return;
+    }
+    const keyA = matchSelected.el.dataset.key;
+    const keyB = el.dataset.key;
+    if (keyA === keyB) {
+      matchSelected.el.classList.remove('selected'); matchSelected.el.classList.add('matched');
+      el.classList.remove('selected'); el.classList.add('matched');
+      matchedCount++;
+      if (matchedCount === matchPairs.length) document.getElementById('matchResult').textContent = '🎉 All matched! Great work!';
+    } else {
+      matchSelected.el.classList.add('wrong-match'); el.classList.add('wrong-match');
+      setTimeout(() => { matchSelected.el.classList.remove('wrong-match','selected'); el.classList.remove('wrong-match','selected'); }, 500);
+    }
+    matchSelected = null;
+  }
+}
+
+// ── FILL BLANKS ──
+const fillSentences = [
+  { before: 'I soon learned that the quickest way to bridge the race gap was through ', blank: 'language', after: '.' },
+  { before: 'If you\'re black in South Africa, speaking English is the one thing that can give you a ', blank: 'leg up', after: '.' },
+  { before: 'She spoke Afrikaans because it is useful to know the language of your ', blank: 'oppressor', after: '.' },
+  { before: 'Language, even more than ', blank: 'color', after: ', defines who you are to people.' },
+  { before: 'I became a ', blank: 'chameleon', after: '. My color didn\'t change, but I could change your perception of my color.' },
+];
+const blankWords = ['language', 'leg up', 'oppressor', 'color', 'chameleon'];
+let selectedWord = null;
+
+function initBlanks() {
+  const bank = document.getElementById('wordBank');
+  const shuffled = [...blankWords].sort(() => Math.random() - 0.5);
+  bank.innerHTML = shuffled.map(w => `<div class="word-chip" data-word="${w}" onclick="selectWord(this)">${w}</div>`).join('');
+
+  const text = document.getElementById('fillText');
+  text.innerHTML = fillSentences.map((s, i) =>
+    `<span>${s.before}<input class="blank-input" data-index="${i}" data-answer="${s.blank}" placeholder="______" readonly onclick="placeWord(this)"></span>${s.after} `
+  ).join('');
+  document.getElementById('blanksResult').textContent = '';
+  selectedWord = null;
+}
+
+function selectWord(el) {
+  if (el.classList.contains('used')) return;
+  document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedWord = el;
+}
+
+function placeWord(input) {
+  if (!selectedWord) return;
+  const prev = input.value;
+  if (prev) {
+    // return old word to bank
+    const chip = document.querySelector(`.word-chip[data-word="${prev}"]`);
+    if (chip) chip.classList.remove('used');
+  }
+  input.value = selectedWord.dataset.word;
+  selectedWord.classList.add('used');
+  selectedWord.classList.remove('selected');
+  selectedWord = null;
+}
+
+function checkBlanks() {
+  let correct = 0;
+  document.querySelectorAll('.blank-input').forEach(inp => {
+    inp.classList.remove('correct', 'wrong');
+    if (inp.value.toLowerCase() === inp.dataset.answer.toLowerCase()) { inp.classList.add('correct'); correct++; }
+    else if (inp.value) { inp.classList.add('wrong'); }
+  });
+  const r = document.getElementById('blanksResult');
+  if (correct === fillSentences.length) { r.textContent = '🎉 Perfect! All ' + fillSentences.length + ' correct!'; r.style.color = 'var(--sage)'; }
+  else { r.textContent = `${correct} / ${fillSentences.length} correct. Try again!`; r.style.color = '#e88a5e'; }
+}
+
+function resetBlanks() { initBlanks(); }
+
+// ── INIT ──
+startQuiz();
+initMatch();
+initBlanks();
+document.getElementById('progressBar').style.width = '14%';
+</script>
+</body>
+</html>
